@@ -10,5 +10,15 @@
     "start:gateway": "npm --workspace=@notify/gateway run dev",
     "build": "npm run build --workspaces",
     "lint": "echo \"no lint configured\""
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.5",
+    "@types/node": "^24.10.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.3"
   }
 }

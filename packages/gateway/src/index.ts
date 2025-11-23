@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import { notifySchema } from "./validators/notify.schema";
 
 const app = express();
 app.use(express.json());
@@ -12,22 +13,24 @@ app.get("/health", (_req: Request, res: Response) => {
 
 // POST /v1/notify
 app.post("/v1/notify", (req: Request, res: Response) => {
-  const { to, message } = req.body ?? {};
+  const parseResult = notifySchema.safeParse(req.body);
 
-  if (!to || !message) {
-    return res.status(400).json({ error: "Missing 'to' or 'message'" });
+  if (!parseResult.success) {
+    return res.status(400).json({
+      error: "Validation failed",
+      details: parseResult.error.format()
+    });
   }
-//  // hard coded values (for testing)
-//  const to = "Minato@gmail.com";
-//  const  message = "This is a test message";
 
-  console.log(`Notify request: to=${to}, message=${message}`);
+  const { email, title, message, payload } = parseResult.data;
 
-  res.status(202).json({
-    status: "accepted",
-    details: "notification scheduled",
-    data: { to }
-  });
+console.log(`Notify request: email=${email}, title=${title}, message=${message}`);
+
+res.status(202).json({
+  status: "accepted",
+  details: "notification scheduled",
+  data: { email }
+});
 });
 
 // 404 fallback
